@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carbondale ET Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f7f7f5;
+    margin: 0;
+    padding: 24px;
+    color: #2a2a28;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 26px 28px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 18px;
+  }
+  h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
+  .subtitle { font-size: 13px; color: #6b6b66; margin: 0 0 4px 0; }
+  .updated { font-size: 12px; color: #9a9a93; }
+
+  .current-grid {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px;
+  }
+  .stat {
+    flex: 1; min-width: 130px; background: #faf9f6;
+    border: 1px solid #ece9e2; border-radius: 8px; padding: 12px 14px;
+  }
+  .stat .label { font-size: 11px; color: #8a8a84; text-transform: uppercase; letter-spacing: .03em; }
+  .stat .value { font-size: 19px; font-weight: 600; margin-top: 3px; }
+  .stat .value.orange { color: #c2622a; }
+  .stat .value.blue { color: #3d6e96; }
+  .stat .sub { font-size: 11px; color: #9a9a93; margin-top: 2px; }
+
+  .controls { background: #faf9f6; border: 1px solid #ece9e2; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .row-label { font-size: 11px; color: #8a8a84; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
+  .preset-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .preset-btn { border: 1px solid #d8d4cb; background: #fff; border-radius: 6px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; color: #4a4a44; }
+  .preset-btn:hover { background: #f0eee8; }
+  .preset-btn.active { background: #c2622a; color: #fff; border-color: #c2622a; }
+
+  .slider-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .slider-line { display: flex; align-items: center; gap: 10px; }
+  .slider-line label { font-size: 12px; color: #6b6b66; width: 46px; flex-shrink: 0; }
+  .slider-line input[type=range] { flex: 1; }
+  .slider-line .date-tag { font-size: 12px; font-weight: 600; width: 78px; text-align: right; }
+
+  .year-toggle-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .year-toggle-row label { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; cursor: pointer; padding: 4px 9px; border: 1px solid #ece9e2; border-radius: 6px; background: #fff; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .toggle-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: #4a4a44; }
+  .toggle-row label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+  canvas { max-height: 420px; }
+
+  table.statTable { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+  table.statTable th, table.statTable td { padding: 6px 10px; text-align: right; border-bottom: 1px solid #ece9e2; }
+  table.statTable th:first-child, table.statTable td:first-child { text-align: left; }
+  table.statTable th { font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: #8a8a84; }
+  table.statTable tr.current { background: #fdf3ec; font-weight: 600; }
+
+  .legend-note { font-size: 12px; color: #8a8a84; margin-top: 14px; line-height: 1.5; }
+  .empty-state { text-align: center; padding: 60px 20px; color: #6b6b66; }
+  .empty-state h2 { font-size: 16px; margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; line-height: 1.6; max-width: 460px; margin: 0 auto; }
+  code { background: #f0eee8; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card" id="loadingCard">
+    <h1>Carbondale ET Dashboard</h1>
+    <p class="subtitle">Loading data&hellip;</p>
+  </div>
+
+  <div id="appRoot" style="display:none;"></div>
+
+</div>
+
+<script>
+const DATA_URL = './data/et_data.json';
+
+fetch(DATA_URL)
+  .then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(records => {
+    if (!records || records.length === 0) throw new Error('empty');
+    document.getElementById('loadingCard').style.display = 'none';
+    document.getElementById('appRoot').style.display = 'block';
+    initApp(records);
+  })
+  .catch(err => {
+    document.getElementById('loadingCard').innerHTML = `
+      <div class="empty-state">
+        <h2>No data yet</h2>
+        <p>
+          This dashboard reads from <code>data/et_data.json</code>, which the
+          daily GitHub Action creates automatically. If you just set this repo
+          up, go to the <strong>Actions</strong> tab, open
+          <strong>Update ET data</strong>, and click <strong>Run workflow</strong>
+          once to trigger the first backfill. After that it updates itself
+          every day.
+        </p>
+      </div>`;
+  });
+
+function initApp(records) {
+  // ---------- Build full-year label template (Jan 1 - Dec 31, leap-template so Feb 29 has a slot) ----------
+  const monthLengths = [31,29,31,30,31,30,31,31,30,31,30,31];
+  const labels366 = [];
+  monthLengths.forEach((len, mi) => {
+    for (let d = 1; d <= len; d++) {
+      labels366.push(String(mi+1).padStart(2,'0') + '-' + String(d).padStart(2,'0'));
+    }
+  });
+  const labelIndex = {};
+  labels366.forEach((l,i) => labelIndex[l] = i);
+
+  // ---------- Group records by year ----------
+  const byYear = {};
+  records.forEach(r => {
+    if (!r.date) return;
+    const [y, m, d] = r.date.split('-');
+    const mmdd = m + '-' + d;
+    if (!(mmdd in labelIndex)) return; // skip stray Feb29 in non-leap mismatches etc.
+    const yr = parseInt(y,10);
+    if (!byYear[yr]) byYear[yr] = { eto: new Array(366).fill(null), precip: new Array(366).fill(null) };
+    byYear[yr].eto[labelIndex[mmdd]] = (r.eto === null || r.eto === undefined) ? null : r.eto;
+    byYear[yr].precip[labelIndex[mmdd]] = (r.precip === null || r.precip === undefined) ? null : r.precip;
+  });
+  const years = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
+
+  function rolling7(arr) {
+    return arr.map((_, i) => {
+      const start = Math.max(0, i-6);
+      const slice = arr.slice(start, i+1).filter(v => v !== null && v !== undefined);
+      if (slice.length === 0) return null;
+      return slice.reduce((a,b)=>a+b,0) / slice.length;
+    });
+  }
+  years.forEach(y => { byYear[y].roll = rolling7(byYear[y].eto); });
+
+  // ---------- Most recent record (chronological, not aligned) ----------
+  const sortedRecords = records.slice().filter(r => r.date).sort((a,b) => a.date < b.date ? -1 : 1);
+  const latest = sortedRecords[sortedRecords.length - 1];
+  const latestDate = new Date(latest.date + 'T00:00:00');
+  const latestYear = latestDate.getFullYear();
+
+  function recordsInLastNDays(n) {
+    const cutoff = new Date(latestDate);
+    cutoff.setDate(cutoff.getDate() - (n - 1));
+    return sortedRecords.filter(r => {
+      const d = new Date(r.date + 'T00:00:00');
+      return d >= cutoff && d <= latestDate;
+    });
+  }
+  function avgField(arr, field) {
+    const vals = arr.map(r => r[field]).filter(v => v !== null && v !== undefined);
+    return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+  }
+  function sumField(arr, field) {
+    const vals = arr.map(r => r[field]).filter(v => v !== null && v !== undefined);
+    return vals.length ? vals.reduce((a,b)=>a+b,0) : 0;
+  }
+  let daysSinceRain = 0;
+  for (let i = sortedRecords.length - 1; i >= 0; i--) {
+    if ((sortedRecords[i].precip || 0) > 0) break;
+    daysSinceRain++;
+  }
+
+  const last7 = recordsInLastNDays(7);
+  const last14 = recordsInLastNDays(14);
+  const last30 = recordsInLastNDays(30);
+
+  // ---------- Render shell ----------
+  const root = document.getElementById('appRoot');
+  root.innerHTML = `
+    <div class="card">
+      <h1>Carbondale ET Dashboard</h1>
+      <p class="subtitle">CoAgMET station CBL01 &middot; daily ETo, precipitation, and multi-year comparison</p>
+      <p class="updated">Last data point: <strong>${latest.date}</strong> &middot; ${sortedRecords.length} days on record (${years[0]}&ndash;${years[years.length-1]})</p>
+
+      <div class="current-grid" id="currentGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="controls">
+        <div class="row-label">Quick zoom</div>
+        <div class="preset-row" id="presetRow"></div>
+
+        <div class="slider-row">
+          <div class="slider-line">
+            <label>From</label>
+            <input type="range" id="startSlider" min="0" max="365" value="0">
+            <span class="date-tag" id="startTag"></span>
+          </div>
+          <div class="slider-line">
+            <label>To</label>
+            <input type="range" id="endSlider" min="0" max="365" value="365">
+            <span class="date-tag" id="endTag"></span>
+          </div>
+        </div>
+
+        <div class="row-label">Years shown</div>
+        <div class="year-toggle-row" id="yearToggleRow"></div>
+
+        <div class="toggle-row">
+          <label><input type="checkbox" id="showRaw"> Show daily (unsmoothed) lines</label>
+          <label><input type="checkbox" id="showPrecip"> Show ${latestYear} precipitation bars</label>
+        </div>
+      </div>
+
+      <canvas id="etChart"></canvas>
+      <table class="statTable" id="statTable"></table>
+      <p class="legend-note">
+        Bold/colored lines = 7-day rolling average ETo per year. Years are aligned by calendar day (Jan 1 - Dec 31)
+        so seasons compare directly regardless of which year fell on a weekend. The table reflects whichever date
+        range is currently selected.
+      </p>
+    </div>
+  `;
+
+  // ---------- Current conditions panel ----------
+  document.getElementById('currentGrid').innerHTML = `
+    <div class="stat"><div class="label">Latest ETo</div><div class="value orange">${(latest.eto ?? 0).toFixed(2)} in/day</div><div class="sub">${latest.date}</div></div>
+    <div class="stat"><div class="label">Last 7 days</div><div class="value">${sumField(last7,'eto').toFixed(2)} in total</div><div class="sub">avg ${(avgField(last7,'eto')||0).toFixed(2)} in/day</div></div>
+    <div class="stat"><div class="label">Last 14 days</div><div class="value">${sumField(last14,'eto').toFixed(2)} in total</div><div class="sub">avg ${(avgField(last14,'eto')||0).toFixed(2)} in/day</div></div>
+    <div class="stat"><div class="label">Last 30 days</div><div class="value">${sumField(last30,'eto').toFixed(2)} in total</div><div class="sub">avg ${(avgField(last30,'eto')||0).toFixed(2)} in/day</div></div>
+    <div class="stat"><div class="label">Days since rain</div><div class="value blue">${daysSinceRain}</div><div class="sub">precip &gt; 0</div></div>
+  `;
+
+  // ---------- Colors ----------
+  const palette = ['#9b9b93','#8b5fbf','#2a9d8f','#5a8f3c','#d4a72c','#3d6e96','#c2622a','#a3445c','#4f7942','#7a5c61'];
+  const yearColors = {};
+  years.forEach((y,i) => { yearColors[y] = palette[i % palette.length]; });
+  yearColors[latestYear] = '#c2622a'; // current year always gets the signature orange
+
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  function prettyDate(mmdd) {
+    const months = {'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'};
+    const [m,d] = mmdd.split('-');
+    return months[m] + ' ' + parseInt(d,10);
+  }
+
+  // default visible years: most recent two
+  const defaultVisible = {};
+  years.slice(-2).forEach(y => defaultVisible[y] = true);
+
+  // ---------- Build chart datasets ----------
+  const datasets = [];
+  datasets.push({
+    type:'bar', label:`Precip ${latestYear} (in)`, data: byYear[latestYear].precip.slice(),
+    backgroundColor:'rgba(74,144,184,0.35)', yAxisID:'y1', order:20, hidden:true,
+    barPercentage:0.85, categoryPercentage:0.9, _kind:'precip'
+  });
+  years.forEach(y => {
+    datasets.push({
+      type:'line', label:`ETo ${y} (daily)`, data: byYear[y].eto.slice(),
+      borderColor: hexToRgba(yearColors[y],0.28), borderWidth:1, pointRadius:0, tension:0.15,
+      yAxisID:'y', order:10, hidden:true, spanGaps:true, _year:y, _kind:'raw'
+    });
+  });
+  years.forEach(y => {
+    datasets.push({
+      type:'line', label:`ETo ${y} (7-day avg)`, data: byYear[y].roll.slice(),
+      borderColor: yearColors[y], backgroundColor: hexToRgba(yearColors[y],0.07),
+      borderWidth: y===latestYear ? 3 : 2, pointRadius:0, tension:0.25, fill:false, spanGaps:true,
+      yAxisID:'y', order: y===latestYear ? 1 : 5, hidden: !defaultVisible[y], _year:y, _kind:'avg'
+    });
+  });
+
+  const ctx = document.getElementById('etChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    data: { labels: labels366.slice(), datasets },
+    options: {
+      responsive: true,
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: { position:'top', labels:{ boxWidth:14, font:{size:11} } },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              if (c.dataset.label.indexOf('Precip') === 0) {
+                return c.parsed.y > 0 ? `${c.dataset.label}: ${c.parsed.y.toFixed(2)} in` : null;
+              }
+              return c.parsed.y === null ? null : `${c.dataset.label}: ${c.parsed.y.toFixed(2)} in/day`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks:{ maxRotation:0, autoSkip:true, maxTicksLimit:14, font:{size:11} }, grid:{display:false} },
+        y: { position:'left', title:{display:true,text:'ETo (in/day)',font:{size:12}}, grid:{color:'rgba(0,0,0,0.05)'}, min:0 },
+        y1:{ position:'right', title:{display:true,text:'Precip (in)',font:{size:12}}, grid:{display:false}, min:0, max:0.6 }
+      }
+    }
+  });
+
+  // ---------- Year toggles ----------
+  const yearToggleRow = document.getElementById('yearToggleRow');
+  years.forEach(y => {
+    const label = document.createElement('label');
+    const swatch = document.createElement('span');
+    swatch.className = 'swatch';
+    swatch.style.background = yearColors[y];
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = !!defaultVisible[y];
+    checkbox.addEventListener('change', () => {
+      chart.data.datasets.forEach(ds => {
+        if (ds._year === y && ds._kind === 'avg') ds.hidden = !checkbox.checked;
+        if (ds._year === y && ds._kind === 'raw') ds.hidden = !checkbox.checked || !document.getElementById('showRaw').checked;
+      });
+      chart.update();
+      refreshStats();
+    });
+    label.appendChild(checkbox);
+    label.appendChild(swatch);
+    label.appendChild(document.createTextNode(y));
+    yearToggleRow.appendChild(label);
+  });
+
+  document.getElementById('showRaw').addEventListener('change', e => {
+    const on = e.target.checked;
+    years.forEach(y => {
+      const isVisible = Array.from(yearToggleRow.children)[years.indexOf(y)].querySelector('input').checked;
+      chart.data.datasets.forEach(ds => { if (ds._year === y && ds._kind === 'raw') ds.hidden = !on || !isVisible; });
+    });
+    chart.update();
+  });
+  document.getElementById('showPrecip').addEventListener('change', e => {
+    chart.data.datasets.forEach(ds => { if (ds._kind === 'precip') ds.hidden = !e.target.checked; });
+    chart.update();
+  });
+
+  // ---------- Slider / zoom ----------
+  const startSlider = document.getElementById('startSlider');
+  const endSlider = document.getElementById('endSlider');
+  const startTag = document.getElementById('startTag');
+  const endTag = document.getElementById('endTag');
+  let curStart = 0, curEnd = 365;
+
+  function sliceData(s, e) {
+    curStart = s; curEnd = e;
+    chart.data.labels = labels366.slice(s, e+1);
+    chart.data.datasets.forEach(ds => {
+      if (ds._kind === 'precip') ds.data = byYear[latestYear].precip.slice(s, e+1);
+      else if (ds._kind === 'raw') ds.data = byYear[ds._year].eto.slice(s, e+1);
+      else if (ds._kind === 'avg') ds.data = byYear[ds._year].roll.slice(s, e+1);
+    });
+    chart.update();
+    refreshStats();
+  }
+  function updateSliders() {
+    let s = parseInt(startSlider.value,10), e = parseInt(endSlider.value,10);
+    if (s > e) { [s,e] = [e,s]; }
+    startTag.textContent = prettyDate(labels366[s]);
+    endTag.textContent = prettyDate(labels366[e]);
+    sliceData(s,e);
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  }
+  startSlider.addEventListener('input', updateSliders);
+  endSlider.addEventListener('input', updateSliders);
+
+  // ---------- Presets (computed relative to the latest data point, so they stay meaningful all year) ----------
+  const latestIdx = labelIndex[String(latestDate.getMonth()+1).padStart(2,'0') + '-' + String(latestDate.getDate()).padStart(2,'0')];
+  const springStart = labelIndex['03-01'], springEnd = labelIndex['06-19'];
+  const monthStart = labelIndex[String(latestDate.getMonth()+1).padStart(2,'0') + '-01'];
+
+  const presets = [
+    { name:'Full Year', s:0, e:365 },
+    { name:'This Month', s: monthStart, e: latestIdx },
+    { name:'Last 30 Days', s: Math.max(0, latestIdx-29), e: latestIdx },
+    { name:'Last 14 Days', s: Math.max(0, latestIdx-13), e: latestIdx },
+    { name:'Spring (Mar 1 - Jun 19)', s: springStart, e: springEnd },
+  ];
+  const presetRow = document.getElementById('presetRow');
+  presets.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'preset-btn';
+    btn.textContent = p.name;
+    btn.addEventListener('click', () => {
+      startSlider.value = p.s; endSlider.value = p.e;
+      startTag.textContent = prettyDate(labels366[p.s]);
+      endTag.textContent = prettyDate(labels366[p.e]);
+      sliceData(p.s, p.e);
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    presetRow.appendChild(btn);
+  });
+
+  // ---------- Stats table ----------
+  function avgRange(arr, s, e) {
+    const vals = arr.slice(s,e+1).filter(v => v !== null && v !== undefined);
+    return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+  }
+  function sumRange(arr, s, e) {
+    return arr.slice(s,e+1).filter(v => v !== null && v !== undefined).reduce((a,b)=>a+b,0);
+  }
+  function refreshStats() {
+    const s = curStart, e = curEnd;
+    const curYearAvg = avgRange(byYear[latestYear].eto, s, e);
+    let rows = '<tr><th>Year</th><th>Avg ETo (in/day)</th><th>Total ETo (in)</th><th>Total Precip (in)</th><th>vs '+latestYear+'</th></tr>';
+    years.forEach(y => {
+      const avg = avgRange(byYear[y].eto, s, e);
+      const totalEto = sumRange(byYear[y].eto, s, e);
+      const totalPrecip = sumRange(byYear[y].precip, s, e);
+      let pctStr = '—';
+      if (y !== latestYear && avg !== null && curYearAvg !== null && avg !== 0) {
+        const pct = ((curYearAvg - avg) / avg) * 100;
+        pctStr = (pct > 0 ? '+' : '') + pct.toFixed(0) + '%';
+      }
+      rows += `<tr class="${y===latestYear?'current':''}">
+        <td>${y}</td>
+        <td>${avg === null ? '—' : avg.toFixed(2)}</td>
+        <td>${totalEto.toFixed(2)}</td>
+        <td>${totalPrecip.toFixed(2)}</td>
+        <td>${pctStr}</td>
+      </tr>`;
+    });
+    document.getElementById('statTable').innerHTML = rows;
+  }
+
+  // ---------- Init: default to Spring window if we're early in the year, else last 30 days ----------
+  const initPreset = latestIdx >= springStart ? presets[2] : presets[0]; // Last 30 Days, fallback Full Year
+  startSlider.value = initPreset.s; endSlider.value = initPreset.e;
+  startTag.textContent = prettyDate(labels366[initPreset.s]);
+  endTag.textContent = prettyDate(labels366[initPreset.e]);
+  sliceData(initPreset.s, initPreset.e);
+  Array.from(presetRow.children).forEach(b => { if (b.textContent === initPreset.name) b.classList.add('active'); });
+}
+</script>
+</body>
+</html>
