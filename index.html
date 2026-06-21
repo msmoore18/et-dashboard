@@ -100,7 +100,7 @@ const DEMAND_MULTIPLIER = 0.84;
 // schedule, at an estimated ~0.4 in/hr nozzle output (Hunter I-20, 3.5-4.0 nozzles).
 const APPLIED_PER_WEEK = 1.75;
 
-fetch(DATA_URL)
+fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' })
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(records => {
     if (!records || records.length === 0) throw new Error('empty');
