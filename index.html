@@ -59,6 +59,7 @@
   .eto-mod   { background: #ecf2df; color: #5a8f3c; }
   .eto-high  { background: #fbe8d6; color: #c2622a; }
   .eto-vhigh { background: #fadcdc; color: #b0392f; }
+  .eto-pending { background: #f0eee8; color: #aaa89f; font-weight: 500; font-size: 13px; }
 
   .precip-badge {
     width: 60px; flex-shrink: 0; text-align: right;
@@ -121,37 +122,52 @@ function render(records) {
   const last7 = sorted.slice(-7);
   const latestDate = last7[last7.length - 1].date;
 
-  const sumEto = last7.reduce((s,r) => s + (r.eto || 0), 0);
-  const sumPrecip = last7.reduce((s,r) => s + (r.precip || 0), 0);
-  const estimatedNeed = sumEto * DEMAND_MULTIPLIER;
+  // Only count days that actually have a finalized ETo reading - the station
+  // typically lags a day or two on ET calculations, so the most recent day(s)
+  // often show up as null rather than 0. Treating "no data yet" as "zero
+  // water demand" would understate the week and risk under-watering.
+  const validEtoDays = last7.filter(r => r.eto !== null && r.eto !== undefined);
+  const missingCount = last7.length - validEtoDays.length;
+  const sumEtoValid = validEtoDays.reduce((s,r) => s + r.eto, 0);
+  const avgEtoValid = validEtoDays.length ? sumEtoValid / validEtoDays.length : 0;
+  const projectedWeekEto = avgEtoValid * 7; // extrapolate the known rate across a full week
+
+  const validPrecipDays = last7.filter(r => r.precip !== null && r.precip !== undefined);
+  const sumPrecip = validPrecipDays.reduce((s,r) => s + r.precip, 0);
+
+  const estimatedNeed = projectedWeekEto * DEMAND_MULTIPLIER;
   const netNeed = Math.max(0, estimatedNeed - sumPrecip);
   const ratio = netNeed / APPLIED_PER_WEEK;
+
+  const completenessNote = missingCount > 0
+    ? ` (based on ${validEtoDays.length} of 7 days — the most recent ${missingCount} day${missingCount>1?'s':''} haven't been finalized by the station yet)`
+    : '';
 
   let bannerClass, headline, detail;
   if (ratio > 1.10) {
     bannerClass = 'increase';
     headline = '⬆️ Consider bumping up watering';
-    detail = `This week's estimated water need is ~${netNeed.toFixed(2)} in` +
-      (sumPrecip > 0 ? ` (after crediting ${sumPrecip.toFixed(2)} in of rain)` : '') +
+    detail = `This week's estimated water need is ~${netNeed.toFixed(2)} in${completenessNote}` +
+      (sumPrecip > 0 ? `, after crediting ${sumPrecip.toFixed(2)} in of rain` : '') +
       `, vs. ~${APPLIED_PER_WEEK.toFixed(2)} in applied at 75 min every-other-day. ` +
       `That's running ${Math.round((ratio-1)*100)}% above your current schedule.`;
   } else if (ratio < 0.80) {
     bannerClass = 'ease';
     headline = '⬇️ You could ease off slightly';
-    detail = `This week's estimated need is ~${netNeed.toFixed(2)} in` +
-      (sumPrecip > 0 ? ` (after crediting ${sumPrecip.toFixed(2)} in of rain)` : '') +
+    detail = `This week's estimated need is ~${netNeed.toFixed(2)} in${completenessNote}` +
+      (sumPrecip > 0 ? `, after crediting ${sumPrecip.toFixed(2)} in of rain` : '') +
       `, vs. ~${APPLIED_PER_WEEK.toFixed(2)} in applied. Given how dry this season has run overall, ` +
       `I'd want to see this hold for a couple weeks before actually cutting back.`;
   } else {
     bannerClass = 'hold';
     headline = '✅ On track — hold at 75 min every-other-day';
-    detail = `This week's estimated need is ~${netNeed.toFixed(2)} in` +
-      (sumPrecip > 0 ? ` (after crediting ${sumPrecip.toFixed(2)} in of rain)` : '') +
+    detail = `This week's estimated need is ~${netNeed.toFixed(2)} in${completenessNote}` +
+      (sumPrecip > 0 ? `, after crediting ${sumPrecip.toFixed(2)} in of rain` : '') +
       `, close to the ~${APPLIED_PER_WEEK.toFixed(2)} in your current schedule applies. No change needed.`;
   }
 
   function etoClass(v) {
-    if (v === null || v === undefined) return 'eto-mod';
+    if (v === null || v === undefined) return 'eto-pending';
     if (v < 0.10) return 'eto-low';
     if (v < 0.18) return 'eto-mod';
     if (v < 0.25) return 'eto-high';
@@ -174,11 +190,11 @@ function render(records) {
           ${maxTemp != null ? `<div class="day-temp">${Math.round(maxTemp)}°F</div>` : ''}
         </div>
         <div class="eto-chip ${etoClass(eto)}">
-          ${eto != null ? eto.toFixed(2) : '—'}
-          <span class="unit">in/day ETo</span>
+          ${eto != null ? eto.toFixed(2) : 'pending'}
+          <span class="unit">${eto != null ? 'in/day ETo' : 'not finalized yet'}</span>
         </div>
-        <div class="precip-badge ${precip > 0 ? 'wet' : 'dry'}">
-          ${precip > 0 ? '💧 ' + precip.toFixed(2) + ' in' : 'no rain'}
+        <div class="precip-badge ${precip > 0 ? 'wet' : (r.precip == null ? 'dry' : 'dry')}">
+          ${r.precip == null ? '—' : (precip > 0 ? '💧 ' + precip.toFixed(2) + ' in' : 'no rain')}
         </div>
       </div>
     `;
@@ -200,6 +216,7 @@ function render(records) {
       <span><span class="dot" style="background:#5a8f3c"></span>Moderate</span>
       <span><span class="dot" style="background:#c2622a"></span>High</span>
       <span><span class="dot" style="background:#b0392f"></span>Very high</span>
+      <span><span class="dot" style="background:#aaa89f"></span>Not finalized yet</span>
     </div>
 
     <a class="footer-link" href="./full.html">Full multi-year chart &amp; zoom →</a>
