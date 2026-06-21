@@ -93,6 +93,23 @@
 <script>
 const DATA_URL = './data/et_data.json';
 
+// Translates an inches/week gap into an actual minutes-per-session change,
+// using the known schedule: 75 min every-other-day (~3.5 sessions/week),
+// at the same assumed ~0.4 in/hr nozzle rate baked into APPLIED_PER_WEEK.
+const CURRENT_SESSION_MINUTES = 75;
+const SESSIONS_PER_WEEK = 3.5;
+const CYCLE_MINUTES = 15;
+
+function suggestedSessionChange(netNeed) {
+  const inPerMinute = APPLIED_PER_WEEK / (CURRENT_SESSION_MINUTES * SESSIONS_PER_WEEK);
+  const requiredWeeklyMinutes = netNeed / inPerMinute;
+  const requiredSessionMinutes = requiredWeeklyMinutes / SESSIONS_PER_WEEK;
+  let deltaCycles = Math.round((requiredSessionMinutes - CURRENT_SESSION_MINUTES) / CYCLE_MINUTES);
+  if (deltaCycles === 0) deltaCycles = requiredSessionMinutes > CURRENT_SESSION_MINUTES ? 1 : -1;
+  const newSessionMinutes = CURRENT_SESSION_MINUTES + deltaCycles * CYCLE_MINUTES;
+  return { deltaCycles, newSessionMinutes };
+}
+
 // ---- Tunable assumptions, documented so future-you can adjust them ----
 // Turf coefficient (Kc) x south-exposure/wind adjustment, midpoint estimate.
 const DEMAND_MULTIPLIER = 0.84;
@@ -145,18 +162,22 @@ function render(records) {
 
   let bannerClass, headline, detail;
   if (ratio > 1.10) {
+    const { deltaCycles, newSessionMinutes } = suggestedSessionChange(netNeed);
     bannerClass = 'increase';
-    headline = '⬆️ Consider bumping up watering';
+    headline = '⬆️ Add about ' + deltaCycles + ' cycle' + (Math.abs(deltaCycles)>1?'s':'') + ' (' + (deltaCycles*15) + ' min)';
     detail = `This week's estimated water need is ~${netNeed.toFixed(2)} in${completenessNote}` +
       (sumPrecip > 0 ? `, after crediting ${sumPrecip.toFixed(2)} in of rain` : '') +
-      `, vs. ~${APPLIED_PER_WEEK.toFixed(2)} in applied at 75 min every-other-day. ` +
-      `That's running ${Math.round((ratio-1)*100)}% above your current schedule.`;
+      `, vs. ~${APPLIED_PER_WEEK.toFixed(2)} in applied at 75 min every-other-day (${Math.round((ratio-1)*100)}% short). ` +
+      `Try ~${newSessionMinutes} min every-other-day instead — that's ${CURRENT_SESSION_MINUTES/15} cycles → ${newSessionMinutes/15} cycles of 15 min. ` +
+      `This is an estimate based on assumed nozzle output, not a measured value — treat it as a starting point.`;
   } else if (ratio < 0.80) {
+    const { deltaCycles, newSessionMinutes } = suggestedSessionChange(netNeed);
     bannerClass = 'ease';
-    headline = '⬇️ You could ease off slightly';
+    headline = '⬇️ Could drop about ' + Math.abs(deltaCycles) + ' cycle' + (Math.abs(deltaCycles)>1?'s':'') + ' (' + Math.abs(deltaCycles*15) + ' min)';
     detail = `This week's estimated need is ~${netNeed.toFixed(2)} in${completenessNote}` +
       (sumPrecip > 0 ? `, after crediting ${sumPrecip.toFixed(2)} in of rain` : '') +
-      `, vs. ~${APPLIED_PER_WEEK.toFixed(2)} in applied. Given how dry this season has run overall, ` +
+      `, vs. ~${APPLIED_PER_WEEK.toFixed(2)} in applied. That points to ~${newSessionMinutes} min every-other-day ` +
+      `(${CURRENT_SESSION_MINUTES/15} cycles → ${newSessionMinutes/15} cycles). Given how dry this season has run overall, ` +
       `I'd want to see this hold for a couple weeks before actually cutting back.`;
   } else {
     bannerClass = 'hold';
