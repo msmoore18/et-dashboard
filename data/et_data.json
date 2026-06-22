@@ -40172,19 +40172,19 @@
  },
  {
   "date": "2026-06-21",
-  "avgTemp": null,
-  "maxTemp": null,
-  "minTemp": null,
-  "rhMax": null,
-  "rhMin": null,
-  "solarRad": null,
-  "precip": null,
-  "windRun": null,
-  "gust": null,
-  "etr": null,
-  "pkEt": null,
-  "eto": null,
-  "soil5cm": null,
-  "soil15cm": null
+  "avgTemp": 63.4,
+  "maxTemp": 84.0,
+  "minTemp": 38.0,
+  "rhMax": 74.3,
+  "rhMin": 10.9,
+  "solarRad": 338.0,
+  "precip": 0.0,
+  "windRun": 88.9,
+  "gust": 26.1,
+  "etr": 0.32,
+  "pkEt": 0.34,
+  "eto": 0.25,
+  "soil5cm": 62.3,
+  "soil15cm": 59.9
  }
 ]
