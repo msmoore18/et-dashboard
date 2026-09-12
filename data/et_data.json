@@ -41563,5 +41563,22 @@
   "eto": 0.18,
   "soil5cm": 60.3,
   "soil15cm": 60.6
+ },
+ {
+  "date": "2026-09-11",
+  "avgTemp": 58.4,
+  "maxTemp": 82.7,
+  "minTemp": 35.3,
+  "rhMax": 75.4,
+  "rhMin": 14.7,
+  "solarRad": 162.7,
+  "precip": 0.0,
+  "windRun": 64.2,
+  "gust": 18.4,
+  "etr": 0.2,
+  "pkEt": 0.17,
+  "eto": 0.14,
+  "soil5cm": 58.8,
+  "soil15cm": 59.4
  }
 ]
