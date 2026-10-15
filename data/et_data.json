@@ -42103,7 +42103,7 @@
   "windRun": 127.9,
   "gust": 22.2,
   "etr": 0.18,
-  "pkEt": 0.16,
+  "pkEt": 0.15,
   "eto": 0.13,
   "soil5cm": 61.8,
   "soil15cm": 58.9
@@ -42124,5 +42124,22 @@
   "eto": 0.09,
   "soil5cm": 59.9,
   "soil15cm": 57.8
+ },
+ {
+  "date": "2026-10-14",
+  "avgTemp": 43.5,
+  "maxTemp": 49.1,
+  "minTemp": 36.0,
+  "rhMax": 97.6,
+  "rhMin": 77.7,
+  "solarRad": 58.8,
+  "precip": 0.28,
+  "windRun": 48.0,
+  "gust": 20.9,
+  "etr": 0.04,
+  "pkEt": 0.05,
+  "eto": 0.03,
+  "soil5cm": 55.4,
+  "soil15cm": 56.5
  }
 ]
