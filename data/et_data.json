@@ -42120,7 +42120,7 @@
   "windRun": 70.2,
   "gust": 24.2,
   "etr": 0.11,
-  "pkEt": 0.07,
+  "pkEt": 0.08,
   "eto": 0.09,
   "soil5cm": 59.9,
   "soil15cm": 57.8
@@ -42154,7 +42154,7 @@
   "windRun": 95.2,
   "gust": 21.5,
   "etr": 0.11,
-  "pkEt": 0.1,
+  "pkEt": 0.09,
   "eto": 0.08,
   "soil5cm": 57.1,
   "soil15cm": 55.4
@@ -42171,7 +42171,7 @@
   "windRun": 45.8,
   "gust": 9.4,
   "etr": 0.11,
-  "pkEt": 0.12,
+  "pkEt": 0.11,
   "eto": 0.08,
   "soil5cm": 57.5,
   "soil15cm": 54.3
@@ -42188,7 +42188,7 @@
   "windRun": 49.8,
   "gust": 9.2,
   "etr": 0.11,
-  "pkEt": 0.11,
+  "pkEt": 0.13,
   "eto": 0.09,
   "soil5cm": 57.2,
   "soil15cm": 53.5
@@ -42205,7 +42205,7 @@
   "windRun": 41.8,
   "gust": 10.2,
   "etr": 0.1,
-  "pkEt": 0.11,
+  "pkEt": 0.09,
   "eto": 0.08,
   "soil5cm": 55.8,
   "soil15cm": 52.6
@@ -42222,7 +42222,7 @@
   "windRun": 54.8,
   "gust": 16.2,
   "etr": 0.09,
-  "pkEt": 0.07,
+  "pkEt": 0.09,
   "eto": 0.07,
   "soil5cm": 58.1,
   "soil15cm": 54.5
@@ -42256,7 +42256,7 @@
   "windRun": 31.0,
   "gust": 5.3,
   "etr": 0.05,
-  "pkEt": 0.04,
+  "pkEt": 0.05,
   "eto": 0.04,
   "soil5cm": 52.3,
   "soil15cm": 53.0
@@ -42273,7 +42273,7 @@
   "windRun": 33.1,
   "gust": 9.3,
   "etr": 0.02,
-  "pkEt": 0.03,
+  "pkEt": 0.02,
   "eto": 0.02,
   "soil5cm": 53.2,
   "soil15cm": 52.9
@@ -42290,7 +42290,7 @@
   "windRun": 67.1,
   "gust": 21.2,
   "etr": 0.11,
-  "pkEt": 0.09,
+  "pkEt": 0.08,
   "eto": 0.08,
   "soil5cm": 56.3,
   "soil15cm": 54.2
@@ -42307,7 +42307,7 @@
   "windRun": 47.6,
   "gust": 12.9,
   "etr": 0.06,
-  "pkEt": 0.04,
+  "pkEt": 0.06,
   "eto": 0.04,
   "soil5cm": 52.2,
   "soil15cm": 52.8
@@ -42341,7 +42341,7 @@
   "windRun": 51.8,
   "gust": 15.4,
   "etr": 0.08,
-  "pkEt": 0.05,
+  "pkEt": 0.07,
   "eto": 0.06,
   "soil5cm": 54.2,
   "soil15cm": 52.4
@@ -42392,7 +42392,7 @@
   "windRun": 56.5,
   "gust": 17.9,
   "etr": 0.12,
-  "pkEt": 0.09,
+  "pkEt": 0.08,
   "eto": 0.08,
   "soil5cm": 51.2,
   "soil15cm": 49.4
@@ -42409,7 +42409,7 @@
   "windRun": 49.0,
   "gust": 8.0,
   "etr": 0.1,
-  "pkEt": 0.07,
+  "pkEt": 0.08,
   "eto": 0.07,
   "soil5cm": 52.1,
   "soil15cm": 49.7
@@ -42494,7 +42494,7 @@
   "windRun": 52.9,
   "gust": 23.2,
   "etr": 0.07,
-  "pkEt": 0.06,
+  "pkEt": 0.05,
   "eto": 0.05,
   "soil5cm": 49.8,
   "soil15cm": 48.0
@@ -42511,7 +42511,7 @@
   "windRun": 28.9,
   "gust": 6.9,
   "etr": 0.05,
-  "pkEt": 0.05,
+  "pkEt": 0.06,
   "eto": 0.04,
   "soil5cm": 49.3,
   "soil15cm": 47.0
@@ -42545,7 +42545,7 @@
   "windRun": 47.5,
   "gust": 10.4,
   "etr": 0.08,
-  "pkEt": 0.06,
+  "pkEt": 0.07,
   "eto": 0.05,
   "soil5cm": 48.5,
   "soil15cm": 46.1
@@ -42600,5 +42600,22 @@
   "eto": 0.05,
   "soil5cm": 46.5,
   "soil15cm": 44.6
+ },
+ {
+  "date": "2026-11-11",
+  "avgTemp": 36.4,
+  "maxTemp": 61.0,
+  "minTemp": 19.4,
+  "rhMax": 96.5,
+  "rhMin": 23.7,
+  "solarRad": 151.1,
+  "precip": 0.0,
+  "windRun": 48.7,
+  "gust": 9.7,
+  "etr": 0.08,
+  "pkEt": 0.06,
+  "eto": 0.06,
+  "soil5cm": 45.9,
+  "soil15cm": 44.0
  }
 ]
