@@ -42171,7 +42171,7 @@
   "windRun": 45.8,
   "gust": 9.4,
   "etr": 0.11,
-  "pkEt": 0.11,
+  "pkEt": 0.1,
   "eto": 0.08,
   "soil5cm": 57.5,
   "soil15cm": 54.3
@@ -42205,7 +42205,7 @@
   "windRun": 41.8,
   "gust": 10.2,
   "etr": 0.1,
-  "pkEt": 0.1,
+  "pkEt": 0.08,
   "eto": 0.08,
   "soil5cm": 55.8,
   "soil15cm": 52.6
@@ -42222,7 +42222,7 @@
   "windRun": 54.8,
   "gust": 16.2,
   "etr": 0.09,
-  "pkEt": 0.07,
+  "pkEt": 0.08,
   "eto": 0.07,
   "soil5cm": 58.1,
   "soil15cm": 54.5
@@ -42239,7 +42239,7 @@
   "windRun": 42.3,
   "gust": 9.8,
   "etr": 0.09,
-  "pkEt": 0.09,
+  "pkEt": 0.08,
   "eto": 0.07,
   "soil5cm": 58.8,
   "soil15cm": 55.0
@@ -42290,7 +42290,7 @@
   "windRun": 67.1,
   "gust": 21.2,
   "etr": 0.11,
-  "pkEt": 0.1,
+  "pkEt": 0.08,
   "eto": 0.08,
   "soil5cm": 56.3,
   "soil15cm": 54.2
@@ -42307,7 +42307,7 @@
   "windRun": 47.6,
   "gust": 12.9,
   "etr": 0.06,
-  "pkEt": 0.05,
+  "pkEt": 0.07,
   "eto": 0.04,
   "soil5cm": 52.2,
   "soil15cm": 52.8
@@ -42324,7 +42324,7 @@
   "windRun": 50.7,
   "gust": 10.3,
   "etr": 0.06,
-  "pkEt": 0.07,
+  "pkEt": 0.05,
   "eto": 0.05,
   "soil5cm": 54.2,
   "soil15cm": 52.7
@@ -42358,7 +42358,7 @@
   "windRun": 72.6,
   "gust": 18.2,
   "etr": 0.12,
-  "pkEt": 0.09,
+  "pkEt": 0.12,
   "eto": 0.09,
   "soil5cm": 52.6,
   "soil15cm": 50.8
@@ -42392,7 +42392,7 @@
   "windRun": 56.5,
   "gust": 17.9,
   "etr": 0.12,
-  "pkEt": 0.08,
+  "pkEt": 0.09,
   "eto": 0.08,
   "soil5cm": 51.2,
   "soil15cm": 49.4
@@ -42477,7 +42477,7 @@
   "windRun": 48.5,
   "gust": 10.2,
   "etr": 0.07,
-  "pkEt": 0.06,
+  "pkEt": 0.07,
   "eto": 0.05,
   "soil5cm": 51.6,
   "soil15cm": 49.4
@@ -42545,7 +42545,7 @@
   "windRun": 47.5,
   "gust": 10.4,
   "etr": 0.08,
-  "pkEt": 0.07,
+  "pkEt": 0.06,
   "eto": 0.05,
   "soil5cm": 48.5,
   "soil15cm": 46.1
@@ -42651,5 +42651,22 @@
   "eto": 0.05,
   "soil5cm": 45.1,
   "soil15cm": 43.3
+ },
+ {
+  "date": "2026-11-14",
+  "avgTemp": 39.3,
+  "maxTemp": 51.1,
+  "minTemp": 30.5,
+  "rhMax": 93.2,
+  "rhMin": 54.6,
+  "solarRad": 67.1,
+  "precip": 0.0,
+  "windRun": 39.8,
+  "gust": 9.6,
+  "etr": 0.04,
+  "pkEt": 0.03,
+  "eto": 0.03,
+  "soil5cm": 45.6,
+  "soil15cm": 44.2
  }
 ]
