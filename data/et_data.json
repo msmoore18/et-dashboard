@@ -42205,7 +42205,7 @@
   "windRun": 41.8,
   "gust": 10.2,
   "etr": 0.1,
-  "pkEt": 0.09,
+  "pkEt": 0.08,
   "eto": 0.08,
   "soil5cm": 55.8,
   "soil15cm": 52.6
@@ -42222,7 +42222,7 @@
   "windRun": 54.8,
   "gust": 16.2,
   "etr": 0.09,
-  "pkEt": 0.06,
+  "pkEt": 0.07,
   "eto": 0.07,
   "soil5cm": 58.1,
   "soil15cm": 54.5
@@ -42239,7 +42239,7 @@
   "windRun": 42.3,
   "gust": 9.8,
   "etr": 0.09,
-  "pkEt": 0.1,
+  "pkEt": 0.08,
   "eto": 0.07,
   "soil5cm": 58.8,
   "soil15cm": 55.0
@@ -42256,7 +42256,7 @@
   "windRun": 31.0,
   "gust": 5.3,
   "etr": 0.05,
-  "pkEt": 0.04,
+  "pkEt": 0.06,
   "eto": 0.04,
   "soil5cm": 52.3,
   "soil15cm": 53.0
@@ -42290,7 +42290,7 @@
   "windRun": 67.1,
   "gust": 21.2,
   "etr": 0.11,
-  "pkEt": 0.11,
+  "pkEt": 0.09,
   "eto": 0.08,
   "soil5cm": 56.3,
   "soil15cm": 54.2
@@ -42307,7 +42307,7 @@
   "windRun": 47.6,
   "gust": 12.9,
   "etr": 0.06,
-  "pkEt": 0.05,
+  "pkEt": 0.07,
   "eto": 0.04,
   "soil5cm": 52.2,
   "soil15cm": 52.8
@@ -42324,7 +42324,7 @@
   "windRun": 50.7,
   "gust": 10.3,
   "etr": 0.06,
-  "pkEt": 0.07,
+  "pkEt": 0.05,
   "eto": 0.05,
   "soil5cm": 54.2,
   "soil15cm": 52.7
@@ -42341,7 +42341,7 @@
   "windRun": 51.8,
   "gust": 15.4,
   "etr": 0.08,
-  "pkEt": 0.07,
+  "pkEt": 0.08,
   "eto": 0.06,
   "soil5cm": 54.2,
   "soil15cm": 52.4
@@ -42358,7 +42358,7 @@
   "windRun": 72.6,
   "gust": 18.2,
   "etr": 0.12,
-  "pkEt": 0.11,
+  "pkEt": 0.1,
   "eto": 0.09,
   "soil5cm": 52.6,
   "soil15cm": 50.8
@@ -42426,7 +42426,7 @@
   "windRun": 72.8,
   "gust": 20.5,
   "etr": 0.1,
-  "pkEt": 0.06,
+  "pkEt": 0.07,
   "eto": 0.07,
   "soil5cm": 52.5,
   "soil15cm": 50.6
@@ -42477,7 +42477,7 @@
   "windRun": 48.5,
   "gust": 10.2,
   "etr": 0.07,
-  "pkEt": 0.07,
+  "pkEt": 0.06,
   "eto": 0.05,
   "soil5cm": 51.6,
   "soil15cm": 49.4
@@ -42511,7 +42511,7 @@
   "windRun": 28.9,
   "gust": 6.9,
   "etr": 0.05,
-  "pkEt": 0.05,
+  "pkEt": 0.06,
   "eto": 0.04,
   "soil5cm": 49.3,
   "soil15cm": 47.0
@@ -42579,7 +42579,7 @@
   "windRun": 43.8,
   "gust": 9.6,
   "etr": 0.08,
-  "pkEt": 0.07,
+  "pkEt": 0.06,
   "eto": 0.06,
   "soil5cm": 47.5,
   "soil15cm": 45.2
@@ -42685,5 +42685,22 @@
   "eto": 0.04,
   "soil5cm": 48.1,
   "soil15cm": 45.7
+ },
+ {
+  "date": "2026-11-16",
+  "avgTemp": 35.0,
+  "maxTemp": 55.9,
+  "minTemp": 20.4,
+  "rhMax": 97.3,
+  "rhMin": 32.7,
+  "solarRad": 132.7,
+  "precip": 0.0,
+  "windRun": 42.2,
+  "gust": 11.9,
+  "etr": 0.06,
+  "pkEt": 0.05,
+  "eto": 0.04,
+  "soil5cm": 45.4,
+  "soil15cm": 43.7
  }
 ]
