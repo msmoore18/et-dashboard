@@ -42358,7 +42358,7 @@
   "windRun": 72.6,
   "gust": 18.2,
   "etr": 0.12,
-  "pkEt": 0.1,
+  "pkEt": 0.09,
   "eto": 0.09,
   "soil5cm": 52.6,
   "soil15cm": 50.8
@@ -42375,7 +42375,7 @@
   "windRun": 102.3,
   "gust": 24.5,
   "etr": 0.15,
-  "pkEt": 0.11,
+  "pkEt": 0.1,
   "eto": 0.1,
   "soil5cm": 50.0,
   "soil15cm": 49.4
@@ -42443,7 +42443,7 @@
   "windRun": 53.2,
   "gust": 11.8,
   "etr": 0.03,
-  "pkEt": 0.04,
+  "pkEt": 0.03,
   "eto": 0.02,
   "soil5cm": 49.2,
   "soil15cm": 49.1
@@ -42460,7 +42460,7 @@
   "windRun": 62.9,
   "gust": 13.7,
   "etr": 0.04,
-  "pkEt": 0.03,
+  "pkEt": 0.04,
   "eto": 0.03,
   "soil5cm": 48.7,
   "soil15cm": 48.9
@@ -42477,7 +42477,7 @@
   "windRun": 48.5,
   "gust": 10.2,
   "etr": 0.07,
-  "pkEt": 0.08,
+  "pkEt": 0.07,
   "eto": 0.05,
   "soil5cm": 51.6,
   "soil15cm": 49.4
@@ -42494,7 +42494,7 @@
   "windRun": 52.9,
   "gust": 23.2,
   "etr": 0.07,
-  "pkEt": 0.06,
+  "pkEt": 0.07,
   "eto": 0.05,
   "soil5cm": 49.8,
   "soil15cm": 48.0
@@ -42545,7 +42545,7 @@
   "windRun": 47.5,
   "gust": 10.4,
   "etr": 0.08,
-  "pkEt": 0.06,
+  "pkEt": 0.07,
   "eto": 0.05,
   "soil5cm": 48.5,
   "soil15cm": 46.1
@@ -42596,7 +42596,7 @@
   "windRun": 45.5,
   "gust": 9.4,
   "etr": 0.07,
-  "pkEt": 0.06,
+  "pkEt": 0.05,
   "eto": 0.05,
   "soil5cm": 46.5,
   "soil15cm": 44.6
@@ -42681,7 +42681,7 @@
   "windRun": 59.0,
   "gust": 14.3,
   "etr": 0.06,
-  "pkEt": 0.04,
+  "pkEt": 0.05,
   "eto": 0.04,
   "soil5cm": 48.1,
   "soil15cm": 45.7
@@ -42715,7 +42715,7 @@
   "windRun": 70.6,
   "gust": 26.1,
   "etr": 0.09,
-  "pkEt": 0.04,
+  "pkEt": 0.05,
   "eto": 0.06,
   "soil5cm": 44.1,
   "soil15cm": 43.0
@@ -42834,9 +42834,26 @@
   "windRun": 54.1,
   "gust": 8.9,
   "etr": 0.05,
-  "pkEt": 0.04,
+  "pkEt": 0.03,
   "eto": 0.04,
   "soil5cm": 41.5,
   "soil15cm": 39.9
+ },
+ {
+  "date": "2026-11-25",
+  "avgTemp": 27.4,
+  "maxTemp": 49.4,
+  "minTemp": 13.2,
+  "rhMax": 93.1,
+  "rhMin": 19.8,
+  "solarRad": 128.2,
+  "precip": 0.0,
+  "windRun": 40.5,
+  "gust": 9.1,
+  "etr": 0.05,
+  "pkEt": 0.04,
+  "eto": 0.04,
+  "soil5cm": 38.1,
+  "soil15cm": 38.3
  }
 ]
